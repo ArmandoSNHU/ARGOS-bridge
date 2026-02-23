@@ -1,2 +1,0 @@
--- Extracted via ARGOS-bridge
-SELECT * FROM CAMPUS_LOCATIONS;

@@ -1,22 +1,23 @@
--- PROJECT: ARGOS-bridge
--- TARGET: Sample College ERP (Generic)
+-- PROJECT: ARGOS-bridge (Universal Edition)
+-- SCHEMA: SC_ERP (Sample College ERP)
 
-/* 1. Enrollment Analytics */
--- Summary of registration by department
+/* USE CASE: Enrollment Reporting
+   DESCRIPTION: Identifies student registration trends across departments.
+*/
 SELECT 
-    dept_name, 
-    COUNT(student_id) as total_enrolled,
-    SUM(credit_hours) as total_credits
-FROM SC_ERP.ENROLLMENT_VIEW
-WHERE term_code = '202510'
-GROUP BY dept_name;
+    dept.department_name, 
+    count(stu.id) AS total_students,
+    sum(enr.credit_hours) AS fte_credits
+FROM SC_ERP.STUDENTS stu
+JOIN SC_ERP.ENROLLMENT enr ON stu.id = enr.student_id
+JOIN SC_ERP.DEPARTMENTS dept ON enr.dept_id = dept.id
+WHERE enr.academic_term = 'SPRING2026'
+GROUP BY dept.department_name;
 
-/* 2. Security Audit */
--- Find active users with administrative database access
-SELECT 
-    user_id, 
-    role_name, 
-    last_login 
-FROM SC_ERP.SYSTEM_ACCESS 
-WHERE is_active = 'Y' 
-  AND role_name LIKE '%ADMIN%';
+/* USE CASE: Security Audit
+   DESCRIPTION: Reports users with elevated database privileges.
+*/
+SELECT username, role, last_login_date 
+FROM SC_ERP.SYSTEM_SECURITY 
+WHERE access_level = 'ADMIN' 
+  AND account_status = 'ACTIVE';
