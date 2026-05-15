@@ -1,0 +1,11 @@
+{
+  "report_id": "FA-001",
+  "name": "Financial Aid Missing Requirements",
+  "functional_area": "Financial Aid",
+  "sql_file": "sql_queries/financial_aid_missing_requirements.sql",
+  "sensitivity": "FERPA/financial aid - restricted",
+  "parameters": ["aid_year"],
+  "output_type": "operational list",
+  "audience": "Financial Aid counselors",
+  "business_question": "Which aid applicants still have missing or incomplete requirements for the selected aid year?"
+}

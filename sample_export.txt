@@ -1,7 +1,7 @@
 METADATA: System=SampleCollegeERP | ExportDate=2026-02-23
 --------------------------------------------------------
 [QUERY_BLOCK_A]
-SELECT * FROM SC_ERP.COURSE_CATALOG WHERE status = 'ACTIVE';
+SELECT course_id, course_title, department_code, status FROM SC_ERP.COURSE_CATALOG WHERE status = 'ACTIVE';
 
 [QUERY_BLOCK_B]
 SELECT student_id, balance_due FROM SC_ERP.FINANCIAL_ACCOUNTS WHERE balance_due > 0;

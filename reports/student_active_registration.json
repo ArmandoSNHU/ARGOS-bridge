@@ -1,0 +1,11 @@
+{
+  "report_id": "STU-001",
+  "name": "Active Registration by Department",
+  "functional_area": "Student",
+  "sql_file": "sql_queries/student_active_registration.sql",
+  "sensitivity": "FERPA - aggregated",
+  "parameters": ["term_code"],
+  "output_type": "dashboard",
+  "audience": "Student Services and academic leadership",
+  "business_question": "How many active students and credit hours are registered by department for a selected term?"
+}

@@ -1,0 +1,11 @@
+{
+  "report_id": "FIN-001",
+  "name": "Outstanding Student Balances",
+  "functional_area": "Finance",
+  "sql_file": "sql_queries/finance_outstanding_balances.sql",
+  "sensitivity": "FERPA/financial - restricted",
+  "parameters": ["minimum_balance"],
+  "output_type": "secured CSV",
+  "audience": "Finance staff",
+  "business_question": "Which active students have balances above the selected threshold?"
+}

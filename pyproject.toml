@@ -1,0 +1,9 @@
+[project]
+name = "argos-bridge"
+version = "0.2.0"
+description = "CLI demo for Banner-style SQL reporting and Argos-style report governance."
+requires-python = ">=3.10"
+dependencies = []
+
+[tool.setuptools]
+packages = ["argos_bridge"]

@@ -21,7 +21,7 @@ SELECT username, role, last_login_date
 FROM SC_ERP.SYSTEM_SECURITY 
 WHERE access_level = 'ADMIN' 
   AND account_status = 'ACTIVE';
-#
+
 /* USE CASE: Data Integrity Check
    DESCRIPTION: Identifies orphan enrollment records (enrollments without valid students).
    This is used for troubleshooting ERP synchronization issues.

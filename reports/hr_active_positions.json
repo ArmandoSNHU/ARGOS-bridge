@@ -1,0 +1,11 @@
+{
+  "report_id": "HR-001",
+  "name": "Active Positions by Department",
+  "functional_area": "Human Resources",
+  "sql_file": "sql_queries/hr_active_positions.sql",
+  "sensitivity": "Employee data - internal",
+  "parameters": [],
+  "output_type": "summary report",
+  "audience": "Human Resources leadership",
+  "business_question": "How many active employees are assigned to each department by position type?"
+}
