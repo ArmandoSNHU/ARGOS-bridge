@@ -1,63 +1,198 @@
 # ARGOS-bridge
 
-ARGOS-bridge is a Python project for Banner-style institutional reporting and Argos-style report governance. It shows how teams can extract SQL from report exports, organize report assets, validate SQL safety, and document report purpose.
+[![Python](https://img.shields.io/badge/python-3.10%2B-blue)](https://www.python.org/)
+[![Tests](https://github.com/ArmandoSNHU/ARGOS-bridge/actions/workflows/ci.yml/badge.svg)](https://github.com/ArmandoSNHU/ARGOS-bridge/actions/workflows/ci.yml)
+[![Dependencies](https://img.shields.io/badge/dependencies-standard%20library-green)](#requirements)
 
-This repository uses fictional `SC_ERP` sample objects. It does not connect to a real Banner, Argos, or ERP environment.
+ARGOS-bridge is a Python command-line project for Banner-style institutional reporting and Argos-style report governance. It demonstrates how report SQL can be extracted, documented, inventoried, and validated before it is treated as a governed reporting asset.
 
-## What It Demonstrates
+The project uses fictional `SC_ERP` sample objects. It does not connect to a real Banner, Argos, Ellucian, Evisions, or ERP environment.
 
-- SQL report extraction from text exports.
-- Governed SQL examples for Student, Finance, Human Resources, and Financial Aid.
-- Argos-style report metadata: audience, parameters, output type, sensitivity, and business question.
-- Validation for risky report patterns such as destructive SQL, missing semicolons, and `SELECT *`.
-- A clean command-line workflow for repeatable report checks.
+## Table Of Contents
+
+- [Overview](#overview)
+- [Features](#features)
+- [Quick Start](#quick-start)
+- [CLI Reference](#cli-reference)
+- [Report Asset Model](#report-asset-model)
+- [Validation Rules](#validation-rules)
+- [Project Structure](#project-structure)
+- [Testing](#testing)
+- [Roadmap](#roadmap)
+- [Disclaimer](#disclaimer)
+
+## Overview
+
+Institutional reporting often depends on three pieces working together:
+
+1. Source-system data, such as Banner-style student, finance, HR, and financial aid records.
+2. SQL report logic that answers operational business questions.
+3. A governed reporting layer that documents audience, parameters, sensitivity, and output expectations.
+
+ARGOS-bridge models that workflow locally. SQL files represent report logic, JSON files represent Argos-style report metadata, and the CLI provides repeatable commands for inventory and validation.
+
+## Features
+
+- Extracts SQL statements from text-based report exports.
+- Maintains governed sample reports for Student, Finance, Human Resources, and Financial Aid.
+- Tracks report metadata including audience, parameters, output type, sensitivity, and business question.
+- Validates SQL for risky or weak reporting patterns.
+- Provides a report inventory summary by functional area and sensitivity.
+- Uses only the Python standard library.
+- Includes unit tests and GitHub Actions CI.
 
 ## Quick Start
 
-Run from the repository root:
+Clone the repository and run the demo:
+
+```powershell
+git clone https://github.com/ArmandoSNHU/ARGOS-bridge.git
+cd ARGOS-bridge
+python -m argos_bridge demo
+```
+
+Expected result:
+
+```text
+ARGOS-bridge demo
+=================
+Report inventory: 4 report(s)
+Parameterized reports: 3
+
+Checked 10 SQL file(s).
+All SQL files pass ARGOS-bridge standards.
+```
+
+## Requirements
+
+- Python 3.10 or newer
+- No third-party runtime dependencies
+
+Optional editable install:
+
+```powershell
+python -m pip install -e .
+```
+
+## CLI Reference
+
+Run all commands from the repository root.
+
+### Demo
+
+Runs inventory and validation together:
 
 ```powershell
 python -m argos_bridge demo
 ```
 
-Useful commands:
+### Inventory
+
+Summarizes report metadata from `reports/`:
 
 ```powershell
 python -m argos_bridge inventory
+```
+
+### Validate
+
+Validates SQL files in `sql_queries/`:
+
+```powershell
 python -m argos_bridge validate sql_queries
+```
+
+### Extract
+
+Extracts SQL statements from a text export and writes timestamped `.sql` files:
+
+```powershell
 python -m argos_bridge extract sample_export.txt
+```
+
+Generated files are written to `sql_queries/`. Review generated files before committing them.
+
+## Report Asset Model
+
+Each governed report has two parts:
+
+- A SQL file in `sql_queries/`
+- A metadata file in `reports/`
+
+Example metadata:
+
+```json
+{
+  "report_id": "STU-001",
+  "name": "Active Registration by Department",
+  "functional_area": "Student",
+  "sql_file": "sql_queries/student_active_registration.sql",
+  "sensitivity": "FERPA - aggregated",
+  "parameters": ["term_code"],
+  "output_type": "dashboard",
+  "audience": "Student Services and academic leadership",
+  "business_question": "How many active students and credit hours are registered by department for a selected term?"
+}
+```
+
+Current sample report areas:
+
+| Area | Report |
+| --- | --- |
+| Student | Active Registration by Department |
+| Finance | Outstanding Student Balances |
+| Human Resources | Active Positions by Department |
+| Financial Aid | Financial Aid Missing Requirements |
+
+## Validation Rules
+
+The validator currently checks for:
+
+- Dangerous or inappropriate commands: `DROP TABLE`, `TRUNCATE`, `DELETE FROM`, `ALTER TABLE`
+- Missing semicolons
+- `SELECT *` usage in governed reports
+- SQL files that do not reference the fictional `SC_ERP` sample schema
+
+Errors fail validation. Warnings are reported so report authors can clean up weak patterns before release.
+
+## Project Structure
+
+```text
+ARGOS-bridge/
+├── argos_bridge/       # CLI package
+├── docs/               # Architecture notes
+├── reports/            # Argos-style report metadata
+├── scripts/            # Compatibility wrappers and sample-data script
+├── sql_queries/        # Governed SQL report examples
+├── tests/              # Unit tests
+├── sample_export.txt   # Sample text export for extraction
+└── pyproject.toml      # Package metadata
+```
+
+## Testing
+
+Run the full test suite:
+
+```powershell
 python -m unittest discover
 ```
 
-`extract` creates timestamped SQL files in `sql_queries/`, so inspect generated files before committing.
+Recommended local verification before committing:
 
-## Why This Matters
+```powershell
+python -m unittest discover
+python -m argos_bridge validate sql_queries
+python -m argos_bridge demo
+```
 
-In a college MIS environment, Banner-style systems are the source of administrative data. Reporting tools such as Argos-style platforms package SQL, parameters, security, and output delivery so Finance, HR, Student Services, and Financial Aid users can make decisions without writing SQL themselves.
+## Roadmap
 
-ARGOS-bridge demonstrates the bridge role:
+- Add metadata-to-SQL consistency checks.
+- Add richer SQL parsing for comments, multiline statements, and vendor-specific syntax.
+- Add report catalog export to Markdown or HTML.
+- Add optional JSON output for CLI commands.
+- Add support for comparing report versions across Git commits.
 
-- Translate functional questions into report requirements.
-- Write readable SQL against institutional data.
-- Track reports as version-controlled assets.
-- Validate risky patterns before release.
-- Document purpose, audience, parameters, and data sensitivity.
+## Disclaimer
 
-## Project Layout
-
-- `argos_bridge/` - CLI package for extraction, validation, and report inventory.
-- `reports/` - Argos-style metadata for report assets.
-- `sql_queries/` - sample Banner-style SQL reports and extracted SQL.
-- `tests/` - standard-library unit tests.
-- `scripts/` - compatibility wrappers for the original proof-of-concept scripts.
-
-## Project Summary
-
-The SQL files represent governed report logic, the metadata files represent Argos-style DataBlock/report documentation, and the validator catches patterns that could cause security, data quality, or maintainability problems.
-
-## Current Limits
-
-- SQL parsing is intentionally lightweight and regex-based.
-- Metadata simulates Argos-style report governance; it is not a proprietary Argos export parser.
-- The ERP API push step is still future work.
-- All sample data is fictional and FERPA-safe.
+ARGOS-bridge is a learning and demonstration project. All schema names, report names, and data examples are fictional. This repository does not include proprietary Argos exports, Banner configuration, production data, credentials, or integrations with real institutional systems.

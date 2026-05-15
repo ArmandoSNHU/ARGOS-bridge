@@ -1,0 +1,28 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Run unit tests
+        run: python -m unittest discover
+
+      - name: Validate SQL reports
+        run: python -m argos_bridge validate sql_queries
+
+      - name: Run project demo
+        run: python -m argos_bridge demo
