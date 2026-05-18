@@ -60,6 +60,14 @@ python -m argos_bridge demo
 
 Warnings are acceptable when they identify intentionally preserved legacy extracts, but errors should be fixed.
 
+## Public Documentation Standard
+
+- Keep README claims tied to implemented CLI behavior.
+- Keep all examples fictional and based on the `SC_ERP` sample schema.
+- Do not add proprietary Argos, Banner, Ellucian, Evisions, ERP, or institutional data.
+- Prefer governed-report language: metadata, validation, inventory, report catalog, sensitivity, audience, parameters.
+- If commands change, update `README.md`, `docs/architecture.md`, and this file together.
+
 ## Known Gaps
 
 - SQL extraction is regex-based and intentionally lightweight.
